@@ -1,20 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[6]:
-
-
-pip install opencv-python
-
-
-# In[1]:
-
-
-#Note to self: Nothing OTHER than "pip install dependency" is allowed in a cell. It must be that command and nothing else!
-
-
-# In[ ]:
-
+#pip install opencv-python
 
 import cv2 as cv2
 import numpy as np
