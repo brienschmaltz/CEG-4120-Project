@@ -14,7 +14,7 @@ def main(): # Driver
 
 
     #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-    img = cv2.imread("D:\GITHUB\CEG-4121-Project\Mak's Work\SampleImages\Q016316C1520U02.jpg") 
+    img = cv2.imread("D:\GITHUB\CEG-4121-Project\Mak's Work\SampleImages\Q025558C9220U01.png") 
 
     #for laptop
     #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
@@ -31,7 +31,8 @@ def main(): # Driver
     cv2.imshow("result", result)
 
     #for desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-    cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages" + "RESULT" + str(image), result)
+
+    cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages\Result" + str(image) + ".jpg", result)
 
     #for laptop
     #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
