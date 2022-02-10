@@ -1,3 +1,4 @@
+from tkinter import Image
 import cv2 as cv2
 import numpy as np
 
@@ -85,7 +86,7 @@ def detectWhite(image):
 #     return result
 
 #Brien's remove white pixels function
-def remove_white_pixels(original_img, mask_img, rows, cols):
+def remove_white_pixels(original_img, mask_img, rows, cols, img):
 
     result_img = original_img.copy() #Copy 
 
@@ -154,7 +155,7 @@ def removeLabel(image):
         #combines detected rectangles mask and the detected white mask
         #combMask = dect_white + dect_rect #add the two masks together
 
-        result = remove_white_pixels(img3, dect_white, rows, cols)
+        result = remove_white_pixels(img3, dect_white, rows, cols, image)
 
     return result
     

@@ -10,11 +10,11 @@ from removeLabelCopy import *
 def main(): # Driver
     ######################################### MAIN #########################################
     #reads in image
-    image = "Q016316C1520U02.tif" #1
+    ## image = "Q016316C1520U02.tif" #1
 
 
     #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-    img = cv2.imread("D:\GITHUB\CEG-4121-Project\Mak's Work\Expected Results" + image) 
+    img = cv2.imread("D:\GITHUB\CEG-4121-Project\Mak's Work\SampleImages\Q016316C1520U02.jpg") 
 
     #for laptop
     #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
@@ -31,7 +31,7 @@ def main(): # Driver
     cv2.imshow("result", result)
 
     #for desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-    cv2.imwrite("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "RESULT" + image, result)
+    cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages" + "RESULT" + str(image), result)
 
     #for laptop
     #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
