@@ -13,35 +13,11 @@ def main(): # Driver
     ## image = "Q016316C1520U02.tif" #1
 
 
-    #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-    img = cv2.imread("D:\GITHUB\CEG-4121-Project\Mak's Work\SampleImages\Q025558C9220U01.png") 
-
-    #for laptop
-    #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
-
-    result = removeLabel(img) 
-
-    #to show that the original size/resolution of the images are maintained
-    print("Image Shape: " + (str)(img.shape))
-    print("Result Shape: " + (str)(result.shape))
-
-    cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-    cv2.namedWindow('result', cv2.WINDOW_NORMAL)
-    cv2.imshow("image", img)
-    cv2.imshow("result", result)
-
-    #for desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-
-    cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages\Result" + str(image) + ".jpg", result)
-
-    #for laptop
-    #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    mainMenu()
 
 
+    mainMenu() 
+
+# Terminal I/!O 
 def mainMenu(): # Begins Calling Funtions 
     print("*** Image Retrieval Tool V.1.0.5 ***")                   # Just for fun!
 
@@ -54,6 +30,33 @@ def mainMenu(): # Begins Calling Funtions
 
     imageRetrieval(directoryInput,images_retrieved)                 # Sending directyInput & the array to store the images in to the image retrieval function
 
+    for i in images_retrieved:                                      #  traversing through the image loop to find each image and pass forward to removeLabel
+        #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
+        img = cv2.imread(i) 
+
+        #for laptop
+        #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
+
+        result = removeLabel(img) 
+
+        #to show that the original size/resolution of the images are maintained
+        print("Image Shape: " + (str)(img.shape))
+        print("Result Shape: " + (str)(result.shape))
+
+        cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('result', cv2.WINDOW_NORMAL)
+        cv2.imshow("image", img)
+        cv2.imshow("result", result)
+
+        #for desktop !!CHANGE THIS FOR YOUR COMPUTER!!
+
+        cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages\Result" + str(image) + ".jpg", result)
+
+        #for laptop
+        #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 def imageRetrieval(directoryInput, images_retrieved):               # Function Retrieves Images from Directory and Stores In 'images_retrieved' array
 
@@ -72,6 +75,7 @@ def imageRetrieval(directoryInput, images_retrieved):               # Function R
 
 def imageIntegrity(images_retrieved):
     print("Now Checking File Integrity")                            # Debug Purposes
+    
     for fp in images_retrieved:
 
         print('checking ', end= "")                                 # DEBUG purposes
