@@ -30,7 +30,12 @@ def mainMenu(): # Begins Calling Funtions
 
     imageRetrieval(directoryInput,images_retrieved)                 # Sending directyInput & the array to store the images in to the image retrieval function
 
+    imageToCV2(images_retrieved)                                    # After imageRetrieval completion program sends imported images array to CV2 editor
+
+def imageToCV2(images_retrieved):
     for i in images_retrieved:                                      #  traversing through the image loop to find each image and pass forward to removeLabel
+        print("image " + i) # DEBUG PURPOSES
+
         #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
         img = cv2.imread(i) 
 
@@ -63,10 +68,10 @@ def imageRetrieval(directoryInput, images_retrieved):               # Function R
     for f in glob.iglob(directoryInput):
         print('found ' + f)
         images_retrieved.append(f)                                  # Adds Image to Array
-        ImportedImage = Image.open(f)                               # Retrieving The Image(ImportedImage) using Image.Open(filename)
-        ImportedImage.show()                                        # Shows Images that it is opening
+        #ImportedImage = Image.open(f)                               # Retrieving The Image(ImportedImage) using Image.Open(filename)
+        #ImportedImage.show()                                        # Shows Images that it is opening
 
-    imageIntegrity(images_retrieved)                                # Sends Retrieved Images to get checked for file integrity
+    # imageIntegrity(images_retrieved)                                # Sends Retrieved Images to get checked for file integrity
 
 #        if ImportedImage is not None:
 #            imageIntegrity(images_retrieved)                        # If image exists check its file type
@@ -93,5 +98,6 @@ def imageIntegrity(images_retrieved):
 def showImage(images_retrieved):                                    # Shows user current image
     for images in images_retrieved:
         images.show()                                               # Shows image received / Debug purposes
+
 if __name__ == "__main__":
     main()
