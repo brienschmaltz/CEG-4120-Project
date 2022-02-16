@@ -19,7 +19,7 @@ def main(): # Driver
 
 # Terminal I/!O 
 def mainMenu(): # Begins Calling Funtions 
-    print("*** Image Retrieval Tool V.1.0.5 ***")                   # Just for fun!
+    print("*** Image Cleanup Tool V.1.0 ***")                   # Menu Screen
 
     images_retrieved = []                                           # Array of Images Extracted from Folder
     valid_imageExtensions = [".tif", ".png"]                        # Approved Image extentions used later to verify output files
@@ -38,9 +38,6 @@ def imageToCV2(images_retrieved):
 
         #for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
         img = cv2.imread(i) 
-
-        #for laptop
-        #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
 
         result = removeLabel(img) 
 
@@ -62,6 +59,16 @@ def imageToCV2(images_retrieved):
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+        print("Image: " + i + " Succesful")
+
+def folderInspection(directoryInput):
+    print("Checking Folder Path (" + directoryInput + ")...")
+
+    if os.path.exists(directoryInput):
+        print("File Path Exists") 
+    else:
+        print("File Path Does Not Exist: Would You Like to Enter a new directiory?")    #can not write there
 
 def imageRetrieval(directoryInput, images_retrieved):               # Function Retrieves Images from Directory and Stores In 'images_retrieved' array
 
