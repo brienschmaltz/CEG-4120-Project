@@ -24,9 +24,33 @@ def mainMenu(): # Begins Calling Funtions
     images_retrieved = []                                           # Array of Images Extracted from Folder
     valid_imageExtensions = [".tif", ".png"]                        # Approved Image extentions used later to verify output files
 
+    
     directoryInput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
     directoryInput = directoryInput + '\*'                          # the addition of '*' symbol is proper semantics when accessing files in folders
-#    directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
+    
+    # Check if directory given is a valid pathname
+    while(true):
+        if (!os.path.isdir(directoryInput)) :                               # If directory is not a valid pathname...
+            print("Error: Input is not a valid pathname")                   # Error message 
+            directoryInput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
+            directoryInput = directoryInput + '\*'                          # the addition of '*' symbol is proper semantics when accessing files in folders
+        else :
+            break                                                           # Otherwise, continue
+    
+    
+    directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
+    directoryOutput = directoryOutput + '\*'                        # the addition of '*' symbol is proper semantics when accessing files in folders
+    
+    # Check if directory given is a valid pathname
+    while(true):
+        if (!os.path.isdir(directoryOutput)) :                               # If directory is not a valid pathname...
+            print("Error: Input is not a valid pathname")                   # Error message
+            directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
+            directoryOutput = directoryOutput + '\*'                        # the addition of '*' symbol is proper semantics when accessing files in folders
+        else :
+            break                                                           # Otherwise, continue
+    
+    
 
     imageRetrieval(directoryInput,images_retrieved)                 # Sending directyInput & the array to store the images in to the image retrieval function
 
