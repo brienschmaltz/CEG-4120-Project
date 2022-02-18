@@ -30,27 +30,32 @@ def mainMenu(): # Begins Calling Funtions
     
     # Check if directory given is a valid pathname
     while(true):
-        if (!os.path.isdir(directoryInput)) :                               # If directory is not a valid pathname...
+        if os.path.isdir(directoryInput) :   # If directory is a valid pathname...
+            directoryInput = directoryInput + '\*'                          # the addition of '*' symbol is proper semantics when accessing files in folders
+            print("Directory found.")
+            break                  
+        else :
             print("Error: Input is not a valid pathname")                   # Error message 
             directoryInput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
-            directoryInput = directoryInput + '\*'                          # the addition of '*' symbol is proper semantics when accessing files in folders
-        else :
-            break                                                           # Otherwise, continue
-    
+            
     
     directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
     directoryOutput = directoryOutput + '\*'                        # the addition of '*' symbol is proper semantics when accessing files in folders
     
     # Check if directory given is a valid pathname
     while(true):
-        if (!os.path.isdir(directoryOutput)) :                               # If directory is not a valid pathname...
-            print("Error: Input is not a valid pathname")                   # Error message
-            directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
-            directoryOutput = directoryOutput + '\*'                        # the addition of '*' symbol is proper semantics when accessing files in folders
+        if os.path.isdir(directoryOutput) :                               # If directory is not a valid pathname...
+            print("Directory found.")
+            break                  
         else :
-            break                                                           # Otherwise, continue
-    
-    
+            print("Error: Input is not a valid pathname")                   # Error message 
+            directoryOutput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
+            
+    # Create activityLog file
+    activityLogPath = directoryOutput + "\activityLog.txt"
+    activityLogFile = open(activityLogPath, "w")
+    directoryOutput = directoryOutput + '\*'                          # the addition of '*' symbol is proper semantics when accessing files in folders
+            
 
     imageRetrieval(directoryInput,images_retrieved)                 # Sending directyInput & the array to store the images in to the image retrieval function
 
