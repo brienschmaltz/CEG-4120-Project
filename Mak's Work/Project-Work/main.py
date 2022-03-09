@@ -85,11 +85,14 @@ def imageIntegrity(images_retrieved):
         
         split_extension = os.path.splitext(fp)[1].lower()                   # Split the extension from the path and normalise it to lowercase.
 
-        if split_extension == ".jpg":                                       # DEBUG purposes
-            print("File Integrity: It is a .jpg!")
+        if split_extension == ".tif" or ".png":                                     # Checks if File is of correct extentsion
+            print("File Integrity: OK ", end= "")
+            print(fp) 
             print(" ")
-        elif split_extension != ".jpg":
-            print("File Integrity: It is not .jpg!")
+        else :
+            print("File Integrity: * NOT '.tif' OR '.png' * image-> " , end= "")
+            print(fp) 
+            print(" ")
 
 
 # ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
