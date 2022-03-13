@@ -22,6 +22,7 @@ def mainMenu():                                                             # St
     images_retrieved = []                                                   # Array of Images Extracted from Folder
     directoryInput = input ("Enter Image/s Retrieval Directory:")           # User Input of Retrieval Directory
     folderInspection(directoryInput, images_retrieved)
+    print(images_retrieved)
     imageToCV2(images_retrieved)                                            # After imageRetrieval completion program sends imported images array to CV2 editor
 
 # ------------------------------------------------------------------- Function imageToCV2() - ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
@@ -34,7 +35,7 @@ def imageToCV2(images_retrieved):
 # To show that the original size/resolution of the images are maintained
         print("Image Shape: " + (str)(img.shape))
         print("Result Shape: " + (str)(result.shape))
-
+w
         cv2.namedWindow('image', cv2.WINDOW_NORMAL)
         cv2.namedWindow('result', cv2.WINDOW_NORMAL)
         cv2.imshow("image", img)
@@ -62,7 +63,7 @@ def folderInspection(directoryInput, images_retrieved):                     # Fu
         imageRetrieval(directoryInput, images_retrieved)                    # Sending directyInput & the array to store the images in to the image retrieval function
     else:
         print("File Path Does Not Exist:")
-        newDirectory = input("Please Enter a new directiory?: ")
+        newDirectory = input("Please Enter a new directiory: ")
         folderInspection(newDirectory, images_retrieved)                    # If User wants to enter new directory, program will send the new directory to be inspected
 
 # ------------------------------------------------------------------- Function imageRetrieval() - Purpose: Enters directory and extracts images into images_received

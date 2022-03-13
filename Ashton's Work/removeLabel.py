@@ -93,7 +93,7 @@ def get_background(img, rows, cols):
             average = (int)(average/2)
 
     
-    print(average)
+    #print(average)
     background = img.copy()
 
     prevPixel = [average,average,average] #initially define a pixel value that is the average
