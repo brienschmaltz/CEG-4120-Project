@@ -22,7 +22,16 @@ def mainMenu():                                                             # St
     images_retrieved = []                                                   # Array of Images Extracted from Folder
     directoryInput = input ("Enter Image/s Retrieval Directory:")           # User Input of Retrieval Directory
     folderInspection(directoryInput, images_retrieved)
+    print("\nCurrent Images Stored: ")
     print(images_retrieved)
+    
+    # imageIntegrity(images_retrieved)   # Check image extensions before sending to CV2
+
+    print("Images After Check")
+    print(images_retrieved)
+
+
+
     imageToCV2(images_retrieved)                                            # After imageRetrieval completion program sends imported images array to CV2 editor
 
 # ------------------------------------------------------------------- Function imageToCV2() - ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
@@ -51,49 +60,59 @@ def imageToCV2(images_retrieved):
 
         print("Image: " + i + " Processed")
         imageCounter += 1
-        time.sleep(0.3)
+        time.sleep(0.05)
 
 # ------------------------------------------------------------------- Function folderInspection() - Purpose: Checks to see if 'directoryInput' path exists
 def folderInspection(directoryInput, images_retrieved):                     # Function designed to check if folder exists
     print("Checking Folder Path (" + directoryInput + ")...")
 
     if os.path.exists(directoryInput):                                      # Does directory exist?
-        print("File Path Exists") 
+        print("\n-----------------> File Path Check: OK") 
         directoryInput = directoryInput + '\*'                              # the addition of '*' symbol is proper semantics when accessing files in folders
         imageRetrieval(directoryInput, images_retrieved)                    # Sending directyInput & the array to store the images in to the image retrieval function
     else:
-        print("File Path Does Not Exist:")
+        print("\n-----------------> File Path Check: * FAIL * -> Path Does Not Exist")
         newDirectory = input("Please Enter a new directiory: ")
         folderInspection(newDirectory, images_retrieved)                    # If User wants to enter new directory, program will send the new directory to be inspected
 
 # ------------------------------------------------------------------- Function imageRetrieval() - Purpose: Enters directory and extracts images into images_received
 def imageRetrieval(directoryInput, images_retrieved):                       # Function Retrieves Images from Directory and Stores In 'images_retrieved' array
-    imageIntegrity(images_retrieved)                                        # Sends Retrieved Images to get checked for file integrity
     for f in glob.iglob(directoryInput):
         print('found ' + f)
         images_retrieved.append(f)                                          # Adds Image to Array
+    
+    imageIntegrity(images_retrieved)                                        # Sends Retrieved Images to get checked for file integrity
 
 
 # ------------------------------------------------------------------- Function imageIntegrity() - Purpose: Checks Images collected in images_received array for file integrity
 def imageIntegrity(images_retrieved):
-    print("Now Checking File Integrity")                                    # Debug Purposes
+    print("\n----------- > Now Checking File Integrity")                                    # Debug Purposes
     
     for fp in images_retrieved:
 
-        print('checking ', end= "")                                         # DEBUG purposes
+        print('\nchecking ', end= "")                                         # DEBUG purposes
         print(fp)                                                           # DEBUG purposes
-        print(" ")
         
         split_extension = os.path.splitext(fp)[1].lower()                   # Split the extension from the path and normalise it to lowercase.
 
-        if split_extension == ".tif" or ".png":                                     # Checks if File is of correct extentsion
-            print("File Integrity: OK ", end= "")
+        # print("Split = ", end= "")
+        # print(split_extension)
+        # print(" ")
+
+            
+        if split_extension != '.tif' or  split_extension == ".png":                                     # Checks if File is of correct extentsion
+            
+            print("File Integrity: * FAIL * for image-> " , end= "")
             print(fp) 
-            print(" ")
+            print("Accepted Extensions: .tif - .png\n")
+
+            images_retrieved.remove(fp)   # Pops out (Removes) image with incorrect extension
+
         else :
-            print("File Integrity: * NOT '.tif' OR '.png' * image-> " , end= "")
+            print("File Integrity: OK -> ", end= "")
             print(fp) 
-            print(" ")
+            print(" ")                                     
+    
 
 
 # ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
