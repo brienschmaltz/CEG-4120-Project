@@ -1,42 +1,14 @@
-from tkinter import N
 import cv2 as cv2
 import numpy as np
 from statistics import mode
-
-#detects the rectangles in the image
-#returns a mask image of the detected rectangles
-#CURRENTLY NOT BEING USED!!!
-# def detectRectangle(image):
-    
-#     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #converts to gray
-
-#     rows,cols,_ = image.shape 
-#     mask = image.copy() #makes copy of original image
-
-#     #goes pixel by pixel and make every pixel black 
-#     #(makes all black image to add rectangles to)
-#     for i in range(rows):
-#         for j in range(cols):
-#             mask[i,j] = [0, 0, 0] #(make it black)
-
-#     #find threshold of the image
-#     _, thrash = cv2.threshold(gray_image, 240, 255, cv2.THRESH_BINARY)
-#     contours, _ = cv2.findContours(thrash, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-
-#     for contour in contours:
-#         shape = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
-        
-#         if len(shape) == 4:
-#             #shape cordinates
-#             x,y,w,h = cv2.boundingRect(shape)
-#             aspectRatio = float(w)/h
-
-#             #only writes it out if it's a big enough rectangle
-#             if(aspectRatio > 2):
-#                 cv2.drawContours(mask, [shape], 0, (255,255,255), thickness=cv2.FILLED) #draws in detected rectangles
-#                 #cv2.putText(image, "Rectangle", (x_cor, y_cor), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,0,0))
-        
-#     return mask #mask of detected rectangles
+from tqdm import tqdm
+import time
+import glob
+import os, os.path
+import cv2 as cv2
+import numpy as np
+from tkinter import N
+from tkinter import Image
 
 
 #detects the bigger white areas in the image
@@ -114,7 +86,7 @@ def get_background(img, rows, cols):
 
 
 #Brien's remove white pixels function
-def remove_white_pixels(original_img, mask_img, rows, cols, background, topLeft):
+def remove_white_pixels(original_img, mask_img, rows, cols, background, topLeft, img):
 
     result_img = original_img.copy() #Copy 
     #background = get_background(original_img, rows, cols)
@@ -152,9 +124,6 @@ def remove_black_box(img, rows, cols, background, topLeft):
     m=0 #background column index
     backRow, backCol, _ = np.array(background).shape 
     result_img = img.copy()
-
-    #print(img[940, 0])
-    #print(img[960, 0])
 
     #if there is text in the top left
     if(topLeft):
@@ -276,78 +245,96 @@ def removeLabel(image):
                     img2[i,j] = [255, 255, 255] #add white mask top
 
         removedBox = remove_black_box(img3, rows, cols, background, topLeft) #gets the background mask of the image (mask that just contains the background with no uranium)
-        
         dect_white = detectWhite(removedBox) #gets mask of detected white
-        #dect_rect = detectRectangle(img2) #gets mask of detected rectangles
-        
-        #combines detected rectangles mask and the detected white mask
-        #combMask = dect_white + dect_rect #add the two masks together
-        
-        result = remove_white_pixels(removedBox, dect_white, rows, cols, background, topLeft) #removes the remaining white pixels from the image
+        result = remove_white_pixels(removedBox, dect_white, rows, cols, background, topLeft, img) #removes the remaining white pixels from the image
 
     return result
-    
-######################################### MAIN #########################################
-#STUFF IN THE MAIN ONLY WORKS ON ASHTON'S COMPUTER!!!
-
-#reads in image (old images)
-#image = "Q016316C1520U02.tif" #1
-#image = "Q019910C1010U02.tif" #2
-#image = "Q019910C1020U01.tif" #3
-#image = "Q019910C8040U02.tif" #4
-#image = "Q025558C9220U01.png" #5
-#image = "Q026480C9030U01.png" #6
-
-#new images
-#image = "Q016312C1010U01.tif" #7
-#image = "Q016312C1020U01.tif" #8
-#image = "Q016312C1030U01.tif" #9
-#image = "Q016312C1040U01.tif" #10
-#image = "Q016312C1050U01.tif" #11
-#image = "Q016312C5010U03.tif" #12
-#image = "Q016312C5020U03.tif" #13
-#image = "Q016312C5040U01.tif" #14
-#image = "Q016312C8020U01.tif" #15
-#image = "Q016312C8030U01.tif" #16
-#image = "Q016312C8040U01.tif" #17
-#image = "Q016314C1010U03.tif" #18
-#image = "Q016314C1030U01.tif" #19
-#image = "Q016314C8010U02.tif" #20
-
+   
 #array that contains every picture we have so far
-images = ["Q016316C1520U02.tif", "Q019910C1010U02.tif", "Q019910C1020U01.tif", "Q019910C8040U02.tif", "Q025558C9220U01.png", "Q026480C9030U01.png", "Q016312C1010U01.tif", "Q016312C1020U01.tif",
- "Q016312C1030U01.tif", "Q016312C1040U01.tif", "Q016312C1050U01.tif", "Q016312C5010U03.tif", "Q016312C5020U03.tif", "Q016312C5040U01.tif", "Q016312C8020U01.tif", "Q016312C8030U01.tif", 
- "Q016312C8040U01.tif", "Q016314C1010U03.tif", "Q016314C1030U01.tif", "Q016314C8010U02.tif"]
+images = ["Q016312C1010U01.tif", "Q016312C1020U01.tif", "Q016312C1030U01.tif", "Q016312C1040U01.tif", "Q016312C1050U01.tif", "Q016312C5010U01.tif", "Q016312C5010U03.tif", "Q016312C5020U03.tif",
+ "Q016312C5040U01.tif", "Q016312C8020U01.tif", "Q016312C8030U01.tif", "Q016312C8040U01.tif", "Q016314C1010U03.tif", "Q016314C1030U01.tif", "Q016314C8010U02.tif", "Q016316C1520U02.tif", 
+ "Q019910C1010U02.tif", "Q019910C1020U01.tif", "Q019910C8040U02.tif", "Q025558C9220U01.png", "Q026480C9030U01.png"]
 
-#for Desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-#img = cv2.imread("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image) #old images 
-#img = cv2.imread("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-2U8EosQU5YDpX4hC/" + image) #new images
-# img = cv2.imread("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/all images/" + image) #new images
-# #for laptop
-# #img = cv2.imread("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/DoD SAFE-3oqh62xzQKrKPmpj/" + image)
+# ------------------------------------------------------------------- *** MAIN ***
+def main(): #                                                           
+    mainMenu() # START MAIN MENU
+    #goToOutput = input("Press Y/y to Open Output Directory.")               # OPEN OUTPUT
+# ------------------------------------------------------------------- Function mainMenu() - Purpose:
+def mainMenu():                                                             # Start Program
+    print("*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
 
-# result = removeLabel(img) 
+    images_retrieved = []                                                   # Array of Images Extracted from Folder
+    directoryInput = input ("Enter Image/s Retrieval Directory:")           # User Input of Retrieval Directory
+    folderInspection(directoryInput, images_retrieved)
+    print(images_retrieved)
+    #NICK - YOU PROBABLY WOULD LIKE TO GET THE SAVE DIRECTORY FIRST HERE******
+    imageToCV2(images_retrieved)                                            # After imageRetrieval completion program sends imported images array to CV2 editor
 
-# #to show that the original size/resolution of the images are maintained
-# print("Image Shape: " + (str)(img.shape))
-# print("Result Shape: " + (str)(result.shape))
+# ------------------------------------------------------------------- Function imageToCV2() - ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
+def imageToCV2(images_retrieved):                                       
+    imageCounter = 1
+    for i in tqdm(images_retrieved):                                        # Traversing through the image loop to find each image and pass forward to removeLabel
+        
+        img = cv2.imread(i) 
+        result = removeLabel(img) 
 
-# cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-# cv2.namedWindow('result', cv2.WINDOW_NORMAL)
-# cv2.imshow("image", img)
-# cv2.imshow("result", result)
+        #NICK - YOU THEN WANT TO CALL YOUR SAVE FUNCTION BELOW AND REPLACE MY HARDCODED cv2.imwrite BELOW*******
+        #save the image
+        cv2.imwrite("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "RESULT" + images[imageCounter-1], result)
 
-# #for desktop !!CHANGE THIS FOR YOUR COMPUTER!!
-# cv2.imwrite("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "RESULT" + image, result)
+        print("Image: " + i + " Processed")
+        imageCounter += 1
+        time.sleep(0.3)
 
-# #for laptop
-# #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
+# ------------------------------------------------------------------- Function folderInspection() - Purpose: Checks to see if 'directoryInput' path exists
+def folderInspection(directoryInput, images_retrieved):                     # Function designed to check if folder exists
+    print("Checking Folder Path (" + directoryInput + ")...")
 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+    if os.path.exists(directoryInput):                                      # Does directory exist?
+        print("File Path Exists") 
+        directoryInput = directoryInput + '\*'                              # the addition of '*' symbol is proper semantics when accessing files in folders
+        imageRetrieval(directoryInput, images_retrieved)                    # Sending directyInput & the array to store the images in to the image retrieval function
+    else:
+        print("File Path Does Not Exist:")
+        newDirectory = input("Please Enter a new directiory: ")
+        folderInspection(newDirectory, images_retrieved)                    # If User wants to enter new directory, program will send the new directory to be inspected
 
-#loops through every image in the images array, removing the unwanted areas and saving the output
-for i in images:
-    img = cv2.imread("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/all images/" + i) #all images
-    result = removeLabel(img) 
-    cv2.imwrite("C:/Users/Ashton Williams/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "RESULT" + i, result)
+# ------------------------------------------------------------------- Function imageRetrieval() - Purpose: Enters directory and extracts images into images_received
+def imageRetrieval(directoryInput, images_retrieved):                       # Function Retrieves Images from Directory and Stores In 'images_retrieved' array
+    imageIntegrity(images_retrieved)                                        # Sends Retrieved Images to get checked for file integrity
+    for f in glob.iglob(directoryInput):
+        print('found ' + f)
+        images_retrieved.append(f)                                          # Adds Image to Array
+
+
+# ------------------------------------------------------------------- Function imageIntegrity() - Purpose: Checks Images collected in images_received array for file integrity
+def imageIntegrity(images_retrieved):
+    print("Now Checking File Integrity")                                    # Debug Purposes
+    
+    for fp in images_retrieved:
+
+        print('checking ', end= "")                                         # DEBUG purposes
+        print(fp)                                                           # DEBUG purposes
+        print(" ")
+        
+        split_extension = os.path.splitext(fp)[1].lower()                   # Split the extension from the path and normalise it to lowercase.
+
+        if split_extension == ".tif" or ".png":                                     # Checks if File is of correct extentsion
+            print("File Integrity: OK ", end= "")
+            print(fp) 
+            print(" ")
+        else :
+            print("File Integrity: * NOT '.tif' OR '.png' * image-> " , end= "")
+            print(fp) 
+            print(" ")
+
+
+# ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
+def showImage(images_retrieved):                                            # Shows user current image
+    for images in images_retrieved:
+        images.show()                                                       # Shows image received / Debug purposes
+
+
+# ------------------------------------------------------------------- Function Main() - Sets "Main()" as the primary driver to the program
+if __name__ == "__main__":
+    main()
