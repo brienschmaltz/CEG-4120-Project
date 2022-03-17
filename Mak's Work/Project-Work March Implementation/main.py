@@ -84,37 +84,69 @@ def imageRetrieval(directoryInput, images_retrieved):                       # Fu
     imageIntegrity(images_retrieved)                                        # Sends Retrieved Images to get checked for file integrity
 
 
+def whatsIsInside(images_retrieved):
+    for f in images_retrieved :
+        print(f)
+
+
 # ------------------------------------------------------------------- Function imageIntegrity() - Purpose: Checks Images collected in images_received array for file integrity
 def imageIntegrity(images_retrieved):
-    print("\n----------- > Now Checking File Integrity")                                    # Debug Purposes
+    print("\n-----------------> Now Checking File Integrity")                                    # Debug Purposes
     
-    for fp in images_retrieved:
+    print("BEFORE LOOP WHAT IS INSIDE ARRAY")
+    whatsIsInside(images_retrieved)
+
+    index = 0
+    lengthOfArray = len(images_retrieved)
+    for i in range(lengthOfArray):
 
         print('\nchecking ', end= "")                                         # DEBUG purposes
-        print(fp)                                                           # DEBUG purposes
+        print(index)                                                           # DEBUG purposes
         
-        split_extension = os.path.splitext(fp)[1].lower()                   # Split the extension from the path and normalise it to lowercase.
+        split_extension = os.path.splitext(images_retrieved[index])[1].lower()                   # Split the extension from the path and normalise it to lowercase.
+        print("Split Extension: ", end="")
+        print(split_extension)
 
         # print("Split = ", end= "")
         # print(split_extension)
         # print(" ")
+            
+        if split_extension != '.tif' or  split_extension != ".png":                                     # Checks if File is of correct extentsion
 
-            
-        if split_extension != '.tif' or  split_extension == ".png":                                     # Checks if File is of correct extentsion
-            
             print("File Integrity: * FAIL * for image-> " , end= "")
-            print(fp) 
+            print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
-            images_retrieved.remove(fp)   # Pops out (Removes) image with incorrect extension
+            print("Removing Image...")
+            if index != 0:
+                index -= 1
+
+            images_retrieved.remove(images_retrieved[index])   # Pops out (Removes) image with incorrect extension
+
+            if len(images_retrieved) == 0:
+                print("-- NO IMAGES REMAINING IN INPUT FOLDER --")
+                exit(0)
+
+            print("REMOVED: ", end="")
+            print(images_retrieved[index])
+
+
+            print("INSIDE LOOP WHAT IS INSIDE ARRAY")
+            whatsIsInside(images_retrieved)
 
         else :
             print("File Integrity: OK -> ", end= "")
-            print(fp) 
-            print(" ")                                     
+            print(images_retrieved[index]) 
+            print(" ")   
+            index += 1
+            print("Index: ", end="")
+            print(index)
+
+        
+
+    print("AFTER LOOP WHAT IS INSIDE ARRAY")
+    whatsIsInside(images_retrieved)                              
     
-
-
 # ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
 def showImage(images_retrieved):                                            # Shows user current image
     for images in images_retrieved:
