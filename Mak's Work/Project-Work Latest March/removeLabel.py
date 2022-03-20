@@ -292,6 +292,7 @@ def mainMenu():                                                             # St
 
     print("\nSending To CV2...")
     imageToCV2(images_retrieved)                                            # After imageRetrieval completion program sends imported images array to CV2 editor
+    mainMenu() # RESTART PROGRAM UNTIL QUIT
     
 # ------------------------------------------------------------------- Function check_UserInput(UserInput) - Validate That User Input is Either a [1] or [2]
 def check_UserInput(UserInput):
