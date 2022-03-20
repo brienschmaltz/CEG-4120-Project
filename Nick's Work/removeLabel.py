@@ -264,8 +264,7 @@ def mainMenu():                                                             # St
     print("*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
 
     images_retrieved = []                                                   # Array of Images Extracted from Folder
-    directoryInput = input ("Enter Image/s Retrieval Directory:")           # User Input of Retrieval Directory
-    directoryInput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
+    directoryInput = input ("Enter Image/s Retrieval Directory: ")   # User Input of Retrieval Directory
     
     # Check if directory given is a valid pathname
     while 1:
@@ -276,10 +275,10 @@ def mainMenu():                                                             # St
             break                  
         else :
             print("Error: Input is not a valid pathname")                   # Error message 
-            directoryInput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
+            directoryInput = input ("Enter Image/s Retrieval Directory: ")   # User Input of Retrieval Directory
             
     
-    directoryOutput = input("Enter Image/s Output Directory:")      # User Inputs directory to store output images
+    directoryOutput = input("Enter Image/s Output Directory: ")      # User Inputs directory to store output images
     
     # Check if directory given is a valid pathname
     while 1:
@@ -289,7 +288,7 @@ def mainMenu():                                                             # St
             break                  
         else :
             print("Error: Input is not a valid pathname")                   # Error message 
-            directoryOutput = input ("Enter Image/s Retrieval Directory:")   # User Input of Retrieval Directory
+            directoryOutput = input ("Enter Image/s Output Directory: ")   # User Input of Retrieval Directory
             
     # Create activityLog file
     activityLogPath = os.path.join(directoryOutput, "activityLog.txt")      
@@ -298,6 +297,7 @@ def mainMenu():                                                             # St
     activityLogFile.write("Output Directory: " + directoryOutput + "\n")
     imageRetrieval(directoryInput, images_retrieved, activityLogFile)     # Collect images to be processed
     imageToCV2(images_retrieved, directoryOutput, activityLogFile)        # After imageRetrieval completion program sends imported images array to CV2 editor
+    print("Completed successfully.")
     activityLogFile.write("Completed successfully.\n")
     activityLogFile.close()
 
@@ -312,7 +312,7 @@ def imageToCV2(images_retrieved, directoryOutput, activityLogFile):
         print("Image: " + i + " processed")
         activityLogFile.write("* Image: " + i + " processed\n")
         #save the image
-        cv2.imwrite(directoryOutput + "RESULT" + images[imageCounter-1], result)
+        cv2.imwrite(os.path.join(directoryOutput, "RESULT_" + images[imageCounter-1]), result)
         print("Image: " + i + " saved")
         activityLogFile.write("* Image: " + i + " saved\n")
         imageCounter += 1
