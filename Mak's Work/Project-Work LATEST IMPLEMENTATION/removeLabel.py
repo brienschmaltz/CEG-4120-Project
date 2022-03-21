@@ -1,4 +1,3 @@
-from curses.ascii import US
 import cv2 as cv2
 import numpy as np
 from statistics import mode
@@ -251,17 +250,18 @@ def removeLabel(image):
 
     return result
    
-#array that contains every picture we have so far
-images = ["Q016312C1010U01.tif", "Q016312C1020U01.tif", "Q016312C1030U01.tif", "Q016312C1040U01.tif", "Q016312C1050U01.tif", "Q016312C5010U01.tif", "Q016312C5010U03.tif", "Q016312C5020U03.tif",
- "Q016312C5040U01.tif", "Q016312C8020U01.tif", "Q016312C8030U01.tif", "Q016312C8040U01.tif", "Q016314C1010U03.tif", "Q016314C1030U01.tif", "Q016314C8010U02.tif", "Q016316C1520U02.tif", 
- "Q019910C1010U02.tif", "Q019910C1020U01.tif", "Q019910C8040U02.tif", "Q025558C9220U01.png", "Q026480C9030U01.png"]
+# #array that contains every picture we have so far
+# images = ["Q016312C1010U01.tif", "Q016312C1020U01.tif", "Q016312C1030U01.tif", "Q016312C1040U01.tif", "Q016312C1050U01.tif", "Q016312C5010U01.tif", "Q016312C5010U03.tif", "Q016312C5020U03.tif",
+#  "Q016312C5040U01.tif", "Q016312C8020U01.tif", "Q016312C8030U01.tif", "Q016312C8040U01.tif", "Q016314C1010U03.tif", "Q016314C1030U01.tif", "Q016314C8010U02.tif", "Q016316C1520U02.tif", 
+#  "Q019910C1010U02.tif", "Q019910C1020U01.tif", "Q019910C8040U02.tif", "Q025558C9220U01.png", "Q026480C9030U01.png"]
 
 # ------------------------------------------------------------------- *** MAIN ***
 def main(): #                                                           
-    print("*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
-
-    mainMenu() # START MAIN MENU
-    goToOutput = input("Press Y/y to Open Output Directory.")               # OPEN OUTPUT
+    print("\n*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
+    
+    while(1):
+        mainMenu() # START MAIN MENU
+    #goToOutput = input("Press Y/y to Open Output Directory.")               # OPEN OUTPUT
 # ------------------------------------------------------------------- Function mainMenu() - Purpose:
 def mainMenu():                                                             # Start Program
     images_retrieved = []                                                   # Array of Images Extracted from Folder
@@ -277,22 +277,41 @@ def mainMenu():                                                             # St
     check_UserInput(UserInput)                                              # CHECK USER INPUT
 
     if int(UserInput) == 1:         
-        print("AT 1")
+        #print("AT 1")
         directoryInput = input("Enter Image/s Retrieval Directory:")       # User Input of Retrieval Directory
     elif int(UserInput)  == 2:
-        print("2")
+        #print("2")
         exit(0)
     elif int(UserInput)  != 1 and int(UserInput) != 2:                                                                   # Catch All Error Inputs
         print("*Error: Enter [1] to begin program - Enter [2] to quit program\n")
         mainMenu()
-    
+
     folderInspection(directoryInput, images_retrieved)                      #Send Folder to be inspected
     
     whatsIsInside(images_retrieved)
 
-    print("\nSending To CV2...")
-    imageToCV2(images_retrieved)                                            # After imageRetrieval completion program sends imported images array to CV2 editor
-    mainMenu() # RESTART PROGRAM UNTIL QUIT
+    directoryOutput = input("Enter Image/s Output Directory: ")      # User Inputs directory to store output images
+    # Check if directory given is a valid pathname
+    while 1:
+        print("Checking Folder Path (" + directoryOutput + ")...")
+        if os.path.isdir(directoryOutput) :                               # If directory is not a valid pathname...
+            print("Directory found.")
+            break                  
+        else :
+            print("Error: Input is not a valid pathname")                   # Error message 
+            directoryOutput = input ("Enter Image/s Output Directory: ")   # User Input of Retrieval Directory
+
+
+    # Create activityLog file
+    activityLogPath = os.path.join(directoryOutput, "activityLog.txt")      
+    activityLogFile = open(activityLogPath, "w")               # Writable activity log file
+    activityLogFile.write("Input Directory: " + directoryInput + "\n")
+    activityLogFile.write("Output Directory: " + directoryOutput + "\n")
+    imageRetrieval(directoryInput, images_retrieved)     # Collect images to be processed
+    imageToCV2(images_retrieved, directoryOutput, activityLogFile)        # After imageRetrieval completion program sends imported images array to CV2 editor
+    print("Completed successfully.")
+    activityLogFile.write("Completed successfully.\n")
+    activityLogFile.close()                                           # After imageRetrieval completion program sends imported images array to CV2 editor
     
 # ------------------------------------------------------------------- Function check_UserInput(UserInput) - Validate That User Input is Either a [1] or [2]
 def check_UserInput(UserInput):
@@ -310,32 +329,22 @@ def check_UserInput(UserInput):
 
 
 # ------------------------------------------------------------------- Function imageToCV2() - ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
-def imageToCV2(images_retrieved):                                       
+def imageToCV2(images_retrieved, directoryOutput, activityLogFile):                                       
     imageCounter = 1
+    activityLogFile.write("Processing images...\n")
     for i in tqdm(images_retrieved):                                        # Traversing through the image loop to find each image and pass forward to removeLabel
+        
         img = cv2.imread(i) 
-
         result = removeLabel(img) 
-# To show that the original size/resolution of the images are maintained
-        print("Image Shape: " + (str)(img.shape))
-        print("Result Shape: " + (str)(result.shape))
-
-        cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-        cv2.namedWindow('result', cv2.WINDOW_NORMAL)
-        cv2.imshow("image", img)
-        cv2.imshow("result", result)
-
-        cv2.imwrite("D:\GITHUB\CEG-4121-Project\Mak's Work\OutputImages\result" + str(Image) + ".jpg", result)
-
-        #for laptop
-        #cv2.imwrite("C:/Users/ashto/OneDrive/Desktop/CEG 6120 Managing the Software Process/Group E Project/Output Images/" + "MASK" + image, mask)
-
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-        print("Image: " + i + " Processed")
+        print("Image: " + os.path.basename(i) + " processed")
+        #images = getImageNames(images_retrieved)
+        #save the image
+        #cv2.imwrite(os.path.join(directoryOutput, "RESULT_" + images[imageCounter-1]), result)
+        cv2.imwrite(os.path.join(directoryOutput, "RESULT_" + os.path.basename(i)), result)
+        print("Image: " + i + " saved")
+        activityLogFile.write("* Image: " + i + " saved\n")
         imageCounter += 1
-        time.sleep(0.05)
+        #time.sleep(0.05)
 
 # ------------------------------------------------------------------- Function folderInspection() - Purpose: Checks to see if 'directoryInput' path exists
 def folderInspection(directoryInput, images_retrieved):                     # Function designed to check if folder exists
@@ -354,6 +363,7 @@ def folderInspection(directoryInput, images_retrieved):                     # Fu
 def imageRetrieval(directoryInput, images_retrieved):                       # Function Retrieves Images from Directory and Stores In 'images_retrieved' array
     for f in glob.iglob(directoryInput):
         print('File Found: ' + f)
+        #activityLogFile.write("* Found " + f + "\n")
         images_retrieved.append(f)                                          # Adds Image to Array
     
     imageIntegrity(images_retrieved)                                        # Sends Retrieved Images to get checked for file integrity
@@ -376,26 +386,20 @@ def imageIntegrity(images_retrieved):
     lengthOfArray = len(images_retrieved)
     for i in range(lengthOfArray):
 
-        print('\nchecking ', end= "")                                         # DEBUG purposes
-        print(index)                                                          # DEBUG purposes
-        
+        print('\nChecking: [', end= "")                                         # DEBUG purposes
+        print(os.path.basename(images_retrieved[index]) + "]")                                                          # DEBUG purposes
+
         split_extension = os.path.splitext(images_retrieved[index])[1].lower()                   # Split the extension from the path and normalise it to lowercase.
-        print("Split Extension: ", end="")
-        print(split_extension)
             
         if split_extension == '.tif' or  split_extension == ".png":                              # Checks if File is of correct extentsion
             print("File Integrity: OK -> ", end= "")
             print(images_retrieved[index]) 
             print(" ")   
             index = index + 1
-            print("Adding To Index")
-            
-            print("Index: ", end="")
-            print(index)
 
         else :
  
-            print("File Integrity: *FAIL for image-> " , end= "")
+            print("File Integrity: *FAIL For Image-> " , end= "")
             print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
@@ -417,6 +421,14 @@ def imageIntegrity(images_retrieved):
             except IndexError:
                 print("\nRemoval Finished...")              
     
+def getImageNames(images_retrieved):
+    images = []
+    imageCount = 0
+    for i in tqdm(images_retrieved):
+        images[imageCount] = os.path.basename(i)
+        imageCount+=1
+    return images
+
 # ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
 def showImage(images_retrieved):                                            # Shows user current image
     for images in images_retrieved:
