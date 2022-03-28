@@ -1,0 +1,9 @@
+[28/03/2022 15:51:49]: Input Directory: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original
+[28/03/2022 15:51:49]: Output Directory: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Output
+Processing images...
+[28/03/2022 15:52:10]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q016316C1520U02.tif saved
+[28/03/2022 15:52:32]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q019910C1010U02.tif saved
+[28/03/2022 15:52:54]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q019910C1020U01.tif saved
+[28/03/2022 15:53:16]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q019910C8040U02.tif saved
+[28/03/2022 15:53:33]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q025558C9220U01.png saved
+[28/03/2022 15:53:52]: * Image: C:\Users\stink\Desktop\WSU\2022 Spring\Managing Software Project\Remove_Text - Uranium Picture Project\CEG-4121-Project\Brien's Work\Images\Original\Q026480C9030U01.png saved
