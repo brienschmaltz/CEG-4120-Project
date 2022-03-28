@@ -11,14 +11,14 @@ import numpy as np
 
 # ------------------------------------------------------------------- *** MAIN ***
 def main(): #                                                           
-
+    print("*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
 
     mainMenu() # START MAIN MENU
     goToOutput = input("Press Y/y to Open Output Directory.")               # OPEN OUTPUT
 # ------------------------------------------------------------------- Function mainMenu() - Purpose:
 def mainMenu():                                                             # Start Program
-    print("*** Image Cleanup Tool V.1.0 ***")                               # Menu Screen
-
+    print("-------------------------------------------")
+    print("[1]: New Directory\n[2]: Quit")
     images_retrieved = []                                                   # Array of Images Extracted from Folder
     directoryInput = input ("Enter Image/s Retrieval Directory:")           # User Input of Retrieval Directory
     folderInspection(directoryInput, images_retrieved)
@@ -111,40 +111,35 @@ def imageIntegrity(images_retrieved):
         # print(split_extension)
         # print(" ")
             
-        if split_extension != '.tif' or  split_extension != ".png":                                     # Checks if File is of correct extentsion
+        if split_extension == '.tif' or  split_extension == ".png":                                     # Checks if File is of correct extentsion
+            print("File Integrity: OK -> ", end= "")
+            print(images_retrieved[index]) 
+            print(" ")   
+            index = index + 1
+            print("Adding To Index")
+            
+            print("Index: ", end="")
+            print(index)
 
+        else :
+ 
             print("File Integrity: * FAIL * for image-> " , end= "")
             print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
             print("Removing Image...")
-            if index != 0:
-                index -= 1
 
             images_retrieved.remove(images_retrieved[index])   # Pops out (Removes) image with incorrect extension
 
-            if len(images_retrieved) == 0:
+            if i == (lengthOfArray - 1):
                 print("-- NO IMAGES REMAINING IN INPUT FOLDER --")
-                exit(0)
+                mainMenu()
 
-            print("REMOVED: ", end="")
+            print("Removed: ", end="")
             print(images_retrieved[index])
+         
 
-
-            print("INSIDE LOOP WHAT IS INSIDE ARRAY")
-            whatsIsInside(images_retrieved)
-
-        else :
-            print("File Integrity: OK -> ", end= "")
-            print(images_retrieved[index]) 
-            print(" ")   
-            index += 1
-            print("Index: ", end="")
-            print(index)
-
-        
-
-    print("AFTER LOOP WHAT IS INSIDE ARRAY")
+    print("\nCurrent Images Stored:")
     whatsIsInside(images_retrieved)                              
     
 # ------------------------------------------------------------------- Function ShowImage() - Purpose: Display Image To User || Debugging
