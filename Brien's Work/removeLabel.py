@@ -1,17 +1,16 @@
-import multiprocessing
 import cv2 as cv2
 import numpy as np
-from statistics import mode
-from tqdm import tqdm
 import time
 import glob
 import os, os.path
 import cv2 as cv2
 import numpy as np
+
 from tkinter import N
 from tkinter import Image
 from datetime import datetime
-#from multiprocessing import Pool
+from statistics import mode
+from tqdm import tqdm
 
 
 #  *** MAIN ***
@@ -21,7 +20,7 @@ def main():
         mainMenu()
 
 def mainMenu():         
-    # Create array of images extracted from Folder                                                  
+    # Create array of images extracted from folder                                                  
     images_retrieved = []                                                   
 
     #Print out options, then verify input
@@ -69,27 +68,26 @@ def mainMenu():
 
    # Create writable activityLog file
     activityLogPath = os.path.join(directoryOutput, "activityLog.txt")   
-    activityLogFile = open(activityLogPath, "w")
+    activityLogFile = open(activityLogPath, "a")
 
     activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Input Directory: " + directoryInput + "\n")
     activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Output Directory: " + directoryOutput + "\n")
-
-    #Attempt at multiprocessing. Does not speed up, causes weird bugs, and is also blocking. Maybe possible to implement this elsewhere.
-    #pool.map(imageToCV2(images_retrieved,directoryOutput,activityLogFile), images_retrieved)  # process images_retrieved iterable with pool  
 
     # After imageRetrieval completion, send imported images array to be processed
     imageToCV2(images_retrieved, directoryOutput, activityLogFile)
 
     #Once complete, log out info to the console and write to activity log.    
     print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Completed successfully.")
-    activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Completed successfully.\n")
+    activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Completed successfully.\n----------\n")
     activityLogFile.close()                                           
     
 #End of main
 
+
 #-----------------------------------------------------------------------
 # Folder and input verification functions
 #-----------------------------------------------------------------------
+
 
 # Check to see if 'directoryInput' path exists
 def folderInspection(directoryInput, images_retrieved):                     
@@ -181,11 +179,13 @@ def showImage(images_retrieved):                                            # Sh
     for images in images_retrieved:
         images.show()                                                       # Shows image received / Debug purposes
 
+
 #-----------------------------------------------------------------------
 #Image noise/text/box removal functions
 #-----------------------------------------------------------------------
 
-# Function imageToCV2() - ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
+
+# ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
 def imageToCV2(images_retrieved, directoryOutput, activityLogFile):                                       
     imageCounter = 1
     activityLogFile.write("Processing images...\n") 
@@ -193,15 +193,15 @@ def imageToCV2(images_retrieved, directoryOutput, activityLogFile):
     for i in tqdm(images_retrieved):                                        # Traversing through the image loop to find each image and pass forward to removeLabel
         img = cv2.imread(i) 
         result = removeLabel(img) 
+        #current_time = datetime.now().strftime("%d-%m-%Y_%H-%M-%S_")
+        current_result_filename = os.path.join(directoryOutput, "RESULT_" + datetime.now().strftime("%d-%m-%Y_%H-%M-%S_") + os.path.basename(i))
+
         print("\n[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Image: " + os.path.basename(i) + " processed")
-        #images = getImageNames(images_retrieved)
-        #save the image
-        cv2.imwrite("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + os.path.join(directoryOutput, "RESULT_" + os.path.basename(i)), result)
-        print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Image: " + i + " saved")
-        activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "* Image: " + i + " saved\n")
+        cv2.imwrite(current_result_filename , result)
+
+        print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Image: " + current_result_filename + " saved")
+        activityLogFile.write("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "* Image: " + current_result_filename + " saved\n")
         imageCounter += 1
-    
-        #time.sleep(0.05)
 
 #detects the bigger white areas in the image
 #returns a mask of the dilated detected white areas
@@ -228,21 +228,7 @@ def detectWhite(image):
 #returns a mask image that contains just the background (uranium replaced with the background color)
 def get_background(img, rows, cols):
 
-    #average = np.median(img)
     average = (int)(mode(img.flatten())) #gets the mode of image (most common color value)
-
-    #average = np.median(img)
-    # average = (int)(mode(img.flatten()))
-
-    # if(average > 90):
-    #     average = (int)(np.median(img)/2)
-    
-    
-    # if(average <= 20):
-    #     average = (int)(np.median(img))
-
-
-    # average = (int)(mode(img.flatten()))
 
     #if the mode is over 90, half it
     if(average > 90):
@@ -256,14 +242,11 @@ def get_background(img, rows, cols):
         if(average > 90):
             average = (int)(average/2)
 
-    
-    #print(average)
     background = img.copy()
 
     prevPixel = [average,average,average] #initially define a pixel value that is the average
     for i in range(rows):
         for j in range(cols):
-            #print(pixel)
 
             #if the average of the current pixel value is greater than the overall average, its part of the uraniam
             if (np.average(background[i][j]) > average): 
@@ -289,7 +272,6 @@ def remove_white_pixels(original_img, mask_img, rows, cols, background, topLeft,
         n = 45 #if top left is true, start background row index at 45
 
     backRow, backCol, _ = np.array(background).shape
-    #print(backSize)
 
     #Loop that iterates through each pixel, determines if white, then makes that pixel black. 
     for i in range(rows):
@@ -442,12 +424,6 @@ def removeLabel(image):
 
     return result
    
-# #array that contains every picture we have so far
-# images = ["Q016312C1010U01.tif", "Q016312C1020U01.tif", "Q016312C1030U01.tif", "Q016312C1040U01.tif", "Q016312C1050U01.tif", "Q016312C5010U01.tif", "Q016312C5010U03.tif", "Q016312C5020U03.tif",
-#  "Q016312C5040U01.tif", "Q016312C8020U01.tif", "Q016312C8030U01.tif", "Q016312C8040U01.tif", "Q016314C1010U03.tif", "Q016314C1030U01.tif", "Q016314C8010U02.tif", "Q016316C1520U02.tif", 
-#  "Q019910C1010U02.tif", "Q019910C1020U01.tif", "Q019910C8040U02.tif", "Q025558C9220U01.png", "Q026480C9030U01.png"]
-
 # Function Main() - Sets "Main()" as the primary driver to the program
 if __name__ == "__main__":
-    #pool = multiprocessing.Pool(processes = multiprocessing.cpu_count()-1) # Create a multiprocessing Pool       
     main()
