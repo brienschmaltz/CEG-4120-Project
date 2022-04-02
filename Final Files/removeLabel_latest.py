@@ -53,6 +53,12 @@ def mainMenu():
     folderInspection(directoryInput, images_retrieved)                      
     whatsIsInside(images_retrieved)
 
+    #if the given directory has no valid images in them, restart.
+    if(not images_retrieved):
+        print("\nNo valid image in the given directory.")
+        print("Restarting...\n")
+        return
+
     print("")
     directoryOutput = input("Enter Image/s Output Directory: ")     
     # Check if directory given is a valid pathname
@@ -129,25 +135,24 @@ def imageIntegrity(images_retrieved):
     index = 0
     lengthOfArray = len(images_retrieved)
     for i in range(lengthOfArray):
-
-        print('\nChecking: [', end= "")                                         # DEBUG purposes
-        print(os.path.basename(images_retrieved[index]) + "]")                  # DEBUG purposes
+        filename = os.path.basename(images_retrieved[index]) 
+        print('\nChecking: [', end= "")                                         # 1 purposes
+        print(filename + "]")                  # DEBUG purposes
 
         split_extension = os.path.splitext(images_retrieved[index])[1].lower()  # Split the extension from the path and normalise it to lowercase.
             
-        if split_extension == '.tif' or  split_extension == ".png":             # Checks if File is of correct extentsion
+        if (split_extension == '.tif' or  split_extension == ".png") and not ("RESULT_" in filename):             # Checks if File is of correct extentsion
             print("File Integrity: OK -> ", end= "")
             print(images_retrieved[index]) 
             print(" ")   
             index = index + 1
 
-        else :
- 
+        else:
             print("File Integrity: *FAIL For Image-> " , end= "")
             print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
-            print("Removing Image...")
+            print("Removing File...")
 
             print("\nRemoved: ", end="")
             print(images_retrieved[index])
