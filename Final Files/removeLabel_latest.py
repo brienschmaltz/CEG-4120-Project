@@ -53,6 +53,12 @@ def mainMenu():
     folderInspection(directoryInput, images_retrieved)                      
     whatsIsInside(images_retrieved)
 
+    #if the given directory has no valid images in them, restart.
+    if(not images_retrieved):
+        print("\nNo valid image in the given directory.")
+        print("Restarting...\n")
+        return
+
     print("")
     directoryOutput = input("Enter Image/s Output Directory: ")     
     # Check if directory given is a valid pathname
@@ -141,13 +147,12 @@ def imageIntegrity(images_retrieved):
             print(" ")   
             index = index + 1
 
-        else :
- 
+        else:
             print("File Integrity: *FAIL For Image-> " , end= "")
             print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
-            print("Removing Image...")
+            print("Removing File...")
 
             print("\nRemoved: ", end="")
             print(images_retrieved[index])
