@@ -1,21 +1,20 @@
+# Developed by Ashton Williams, Brien Schmaltz, Nick Ianni, Mak, Shivani
+# Official Package Repository: https://github.com/brienschmaltz/uranium_image_cleanup
+
 import cv2 as cv2
 import numpy as np
-import time
 import glob
 import os, os.path
 import cv2 as cv2
 import numpy as np
 
-# from tkinter import N
-# from tkinter import Image
 from datetime import datetime
 from statistics import mode
 from tqdm import tqdm
 
-
 #  *** MAIN ***
 def main():                                     
-    print("\n*** Image Cleanup Tool V.1.0 ***")           
+    print("\n*** Uranium Image Cleanup Tool ***")           
     while(True):
         mainMenu()
 
@@ -55,7 +54,7 @@ def mainMenu():
 
     #if the given directory has no valid images in them, restart.
     if(not images_retrieved):
-        print("\nNo valid image in the given directory.")
+        print("\nNo valid files in the given directory.")
         print("Restarting...\n")
         return
 
@@ -65,12 +64,11 @@ def mainMenu():
     while(True):
         print("Checking Folder Path (" + directoryOutput + ")...")
         if os.path.isdir(directoryOutput) :                               # If directory is a valid pathname...
-            print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Directory found.")
+            print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Directory Found.")
             break                  
         else :
             print("Error: Input is not a valid pathname")                   
             directoryOutput = input ("Enter Image/s Output Directory: ")   # User Input of Retrieval Directory
-
 
    # Create writable activityLog file
     activityLogPath = os.path.join(directoryOutput, "activityLog.txt")   
@@ -89,23 +87,28 @@ def mainMenu():
     
 #End of main
 
-
 #-----------------------------------------------------------------------
-# Folder and input verification functions
+# Folder and Input verification functions
 #-----------------------------------------------------------------------
-
 
 # Check to see if 'directoryInput' path exists
 def folderInspection(directoryInput, images_retrieved):                     
     print("Checking Folder Path (" + directoryInput + ")...")
 
-    if os.path.exists(directoryInput):                                      # Does directory exist?
-        print("\n-----------------> File Path Check: OK") 
-        directoryInput = directoryInput + '\*'                              # the addition of '*' symbol is proper semantics when accessing files in folders
+    if os.path.exists(directoryInput):                      # Does directory exist?
+        print("\n-----------------> File Path Check: OK")
+
+        #Check OS, either windows or unix like system. Windows uses \ Unix uses /
+        if os.name == 'nt':
+            slash = '\*'
+        else: 
+            slash = '/*'
+
+        directoryInput = directoryInput + slash                              # the addition of '*' symbol is proper semantics when accessing files in folders
         imageRetrieval(directoryInput, images_retrieved)                    # Sending directyInput & the array to store the images in to the image retrieval function
     else:
         print("\n-----------------> File Path Check: * FAIL * -> Path Does Not Exist")
-        newDirectory = input("Please Enter a new directory: ")
+        newDirectory = input("Please Enter a New Directory: ")
         folderInspection(newDirectory, images_retrieved)                    # If User wants to enter new directory, program will send the new directory to be inspected
 
 # Enter directory and extracts images into images_received
@@ -136,12 +139,12 @@ def imageIntegrity(images_retrieved):
     lengthOfArray = len(images_retrieved)
     for i in range(lengthOfArray):
         filename = os.path.basename(images_retrieved[index]) 
-        print('\nChecking: [', end= "")                                         # 1 purposes
+        print('\nChecking: [', end= "")        
         print(filename + "]")                  # DEBUG purposes
 
         split_extension = os.path.splitext(images_retrieved[index])[1].lower()  # Split the extension from the path and normalise it to lowercase.
             
-        if (split_extension == '.tif' or  split_extension == ".png") and not ("RESULT_" in filename):             # Checks if File is of correct extentsion
+        if (split_extension == '.tif' or  split_extension == ".png") and not ("RESULT_" in filename):   # Checks if File is of correct extentsion
             print("File Integrity: OK -> ", end= "")
             print(images_retrieved[index]) 
             print(" ")   
@@ -161,9 +164,8 @@ def imageIntegrity(images_retrieved):
             if i == (lengthOfArray - 1):
                 #print("\n-- NO IMAGES REMAINING IN INPUT FOLDER --")
 
-                if lengthOfArray == 0:                                                          # If Image Array is Empty Restart Program
+                if lengthOfArray == 0:                                           # If Image Array is Empty Restart Program
                     print("\n-- NO IMAGES ACCEPTED IN INPUT FOLDER --")
-                    #We could just potentially quit here to avoid issues. Will have to do more testing.
                     mainMenu()
 
             try:
@@ -190,18 +192,25 @@ def showImage(images_retrieved):                                            # Sh
 #-----------------------------------------------------------------------
 
 
-# ASHTONS CODE + ITERATOR | Removes Labels & Text From Images:
+# Main loop to iterate through each image and write to console and activity log
 def imageToCV2(images_retrieved, directoryOutput, activityLogFile):                                       
     imageCounter = 1
-    activityLogFile.write("Processing images...\n") 
+    activityLogFile.write("Processing Images...\n") 
 
-    for i in tqdm(images_retrieved):                                        # Traversing through the image loop to find each image and pass forward to removeLabel
-        img = cv2.imread(i) 
+    for i in tqdm(images_retrieved):
+        
+        #Grab image from file array
+        img = cv2.imread(i)
+
+        #pass to removeLabel for processing
         result = removeLabel(img) 
-        #current_time = datetime.now().strftime("%d-%m-%Y_%H-%M-%S_")
+
+        #Create filename suitable for Linux and Windows
         current_result_filename = os.path.join(directoryOutput, "RESULT_" + datetime.now().strftime("%d-%m-%Y_%H-%M-%S_") + os.path.basename(i))
 
         print("\n[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Image: " + os.path.basename(i) + " processed")
+        
+        #Write out result file to output directory
         cv2.imwrite(current_result_filename , result)
 
         print("[" + datetime.now().strftime("%d/%m/%Y %H:%M:%S") +  "]: " + "Image: " + current_result_filename + " saved")
@@ -264,12 +273,10 @@ def get_background(img, rows, cols):
 
     return background
 
-
-#Brien's remove white pixels function
+#returns image with no white pixels. Iterates through each pixel, deletes white pixel and replaces with background pixel nearby.
 def remove_white_pixels(original_img, mask_img, rows, cols, background, topLeft, img):
 
     result_img = original_img.copy() #Copy 
-    #background = get_background(original_img, rows, cols)
     n=0 #background row index
     m=0 #background column index
 
@@ -282,7 +289,6 @@ def remove_white_pixels(original_img, mask_img, rows, cols, background, topLeft,
     for i in range(rows):
         for j in range(cols):
             mask_pixel_val = mask_img[i,j] #value/color of the current pixel
-            #backgroundColor = img[i,0] #get the background color for this row
             
             # Conditional to determine if pixel is white.
             if (np.array_equal(mask_pixel_val, np.array([255, 255, 255]))):
