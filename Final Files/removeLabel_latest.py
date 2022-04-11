@@ -6,8 +6,8 @@ import os, os.path
 import cv2 as cv2
 import numpy as np
 
-from tkinter import N
-from tkinter import Image
+# from tkinter import N
+# from tkinter import Image
 from datetime import datetime
 from statistics import mode
 from tqdm import tqdm
@@ -105,7 +105,7 @@ def folderInspection(directoryInput, images_retrieved):
         imageRetrieval(directoryInput, images_retrieved)                    # Sending directyInput & the array to store the images in to the image retrieval function
     else:
         print("\n-----------------> File Path Check: * FAIL * -> Path Does Not Exist")
-        newDirectory = input("Please Enter a new directiory: ")
+        newDirectory = input("Please Enter a new directory: ")
         folderInspection(newDirectory, images_retrieved)                    # If User wants to enter new directory, program will send the new directory to be inspected
 
 # Enter directory and extracts images into images_received
@@ -129,7 +129,7 @@ def whatsIsInside(images_retrieved):
 def imageIntegrity(images_retrieved):
     print("\n-----------------> Now Checking File Integrity")                   # DEBUG Purposes
     
-    print("Images Retrieved:")
+    print("Files Retrieved:")
     whatsIsInside(images_retrieved)
 
     index = 0
@@ -148,7 +148,7 @@ def imageIntegrity(images_retrieved):
             index = index + 1
 
         else:
-            print("File Integrity: *FAIL For Image-> " , end= "")
+            print("File Integrity: *FAIL For File-> " , end= "")
             print(images_retrieved[index]) 
             print("Accepted Extensions: .tif - .png\n")
 
